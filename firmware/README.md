@@ -1,10 +1,12 @@
 /*
 FIRMWARE_ID: HEATER_E3.2.1
-BUILD_DATE: 2026-01-02
+PROJECT: ESP8266 Heater Controller
+BUILD: 2026-01-02
 FEATURES:
-- FSM WiFi
-- OTA Safe
-- Internal Log
+- WiFi FSM
+- OTA Safe Update
+- Internal File Logging
+- Web UI + Settings
 */
 
 
