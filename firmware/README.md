@@ -1,1 +1,9 @@
+/*
+FIRMWARE_ID: HEATER_E3.2.1
+BUILD_DATE: 2026-01-02
+FEATURES:
+- FSM WiFi
+- OTA Safe
+- Internal Log
+*/
 
