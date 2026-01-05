@@ -32,6 +32,11 @@ jobs:
           arduino-cli core update-index
           arduino-cli core install esp8266:esp8266
 
+      - name: Install required libraries
+        run: |
+          arduino-cli lib install "DHT sensor library"
+          arduino-cli lib install "Adafruit Unified Sensor"
+    
       # 5️⃣ کامپایل فریم‌ویر
       - name: Compile ESP8266 Firmware
         run: |
