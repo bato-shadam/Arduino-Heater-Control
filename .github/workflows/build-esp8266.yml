@@ -2,59 +2,35 @@ name: Build ESP8266 Firmware
 
 on:
   push:
-    branches:
-      - main
-  workflow_dispatch:
+    branches: [ main ]
+  pull_request:
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ دریافت سورس از ریپو
-      - name: Checkout repository
-        uses: actions/checkout@v4
+    - name: Checkout repository
+      uses: actions/checkout@v4
 
-      # 2️⃣ نصب Arduino CLI
-      - name: Setup Arduino CLI
-        run: |
-          arduino-cli config init
-          arduino-cli config set board_manager.additional_urls \
+    - name: Install Arduino CLI
+      uses: arduino/setup-arduino-cli@v1
+
+    - name: Setup ESP8266 Core
+      run: |
+        arduino-cli config init
+        arduino-cli config set board_manager.additional_urls \
           http://arduino.esp8266.com/stable/package_esp8266com_index.json
-          arduino-cli core update-index
-          arduino-cli core install esp8266:esp8266   
-          
-      - name: Install Arduino CLI
-        uses: arduino/setup-arduino-cli@v1
+        arduino-cli core update-index
+        arduino-cli core install esp8266:esp8266
 
-      # 3️⃣ اضافه کردن ESP8266 Board Manager URL
-      - name: Add ESP8266 Board URL
-        run: |
-          arduino-cli config init
-          arduino-cli config set board_manager.additional_urls \
-          http://arduino.esp8266.com/stable/package_esp8266com_index.json
+    - name: Install required libraries
+      run: |
+        arduino-cli lib install "DHT sensor library"
+        arduino-cli lib install "Adafruit Unified Sensor"
 
-      # 4️⃣ نصب ESP8266 Core
-      - name: Install ESP8266 Core
-        run: |
-          arduino-cli core update-index
-          arduino-cli core install esp8266:esp8266
-
-      - name: Install required libraries
-        run: |
-          arduino-cli lib install "DHT sensor library"
-          arduino-cli lib install "Adafruit Unified Sensor"
-    
-      # 5️⃣ کامپایل فریم‌ویر
-      - name: Compile ESP8266 Firmware
-        run: |
-          arduino-cli compile \
-            --fqbn esp8266:esp8266:nodemcuv2 \
-            heater_E3.2.1
-
-      # 6️⃣ ذخیره فایل خروجی (اختیاری ولی حرفه‌ای)
-      - name: Upload firmware artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: esp8266-firmware
-          path: firmware/build
+    - name: Compile ESP8266 Firmware
+      run: |
+        arduino-cli compile \
+          --fqbn esp8266:esp8266:nodemcuv2 \
+          heater_E3.2.1
