@@ -37,7 +37,7 @@ jobs:
         run: |
           arduino-cli compile \
             --fqbn esp8266:esp8266:nodemcuv2 \
-            firmware
+            heater_E3.2.1
 
       # 6️⃣ ذخیره فایل خروجی (اختیاری ولی حرفه‌ای)
       - name: Upload firmware artifact
