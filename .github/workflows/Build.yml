@@ -26,11 +26,11 @@ jobs:
         run: |
           arduino-cli core install esp8266:esp8266
 
-      - name: Install libraries
+      - name: Install external libraries
         run: |
-          arduino-cli lib install "ESP8266WiFi"
-          arduino-cli lib install "ESP8266WebServer"
           arduino-cli lib install "ArduinoJson"
+          arduino-cli lib install "DHT sensor library"
+          arduino-cli lib install "Adafruit Unified Sensor"
 
       - name: Compile firmware
         run: |
