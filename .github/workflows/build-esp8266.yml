@@ -11,35 +11,37 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
+      # 1️⃣ دریافت سورس از ریپو
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    - name: Install Arduino CLI
-      run: |
-        curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | sh
-        sudo mv bin/arduino-cli /usr/local/bin/
+      # 2️⃣ نصب Arduino CLI
+      - name: Install Arduino CLI
+        uses: arduino/setup-arduino-cli@v1
 
-    - name: Setup ESP8266
-      run: |
-        arduino-cli config init
-        arduino-cli core update-index
-        arduino-cli core install esp8266:esp8266
+      # 3️⃣ اضافه کردن ESP8266 Board Manager URL
+      - name: Add ESP8266 Board URL
+        run: |
+          arduino-cli config init
+          arduino-cli config set board_manager.additional_urls \
+          http://arduino.esp8266.com/stable/package_esp8266com_index.json
 
-    - name: Install libraries
-      run: |
-        arduino-cli lib install ArduinoJson
-        arduino-cli lib install "DHT sensor library"
+      # 4️⃣ نصب ESP8266 Core
+      - name: Install ESP8266 Core
+        run: |
+          arduino-cli core update-index
+          arduino-cli core install esp8266:esp8266
 
-    - name: Compile firmware
-      run: |
-        arduino-cli compile \
-          --fqbn esp8266:esp8266:nodemcuv2 \
-          heater_E3.2.1 \
-          --output-dir build
+      # 5️⃣ کامپایل فریم‌ویر
+      - name: Compile ESP8266 Firmware
+        run: |
+          arduino-cli compile \
+            --fqbn esp8266:esp8266:nodemcuv2 \
+            firmware
 
-    - name: Upload bin
-      uses: actions/upload-artifact@v4
-      with:
-        name: heater_E3.2.1_bin
-        path: build/*.bin
-        
+      # 6️⃣ ذخیره فایل خروجی (اختیاری ولی حرفه‌ای)
+      - name: Upload firmware artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: esp8266-firmware
+          path: firmware/build
