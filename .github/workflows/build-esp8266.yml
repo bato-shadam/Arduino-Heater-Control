@@ -34,7 +34,7 @@ jobs:
       run: |
         arduino-cli compile \
           --fqbn esp8266:esp8266:nodemcuv2 \
-          heater_E3.2.1/heater_E3.2.1.ino \
+          heater_E3.2.1 \
           --output-dir build
 
     - name: Upload bin
