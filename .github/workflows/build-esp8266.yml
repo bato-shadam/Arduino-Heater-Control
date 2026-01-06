@@ -34,10 +34,10 @@ jobs:
           arduino-cli compile \
             --fqbn esp8266:esp8266:nodemcuv2 \
             --output-dir build \
-            heater_E3.2.1
+            test
 
       - name: Upload firmware BIN
         uses: actions/upload-artifact@v4
         with:
-          name: heater_E3.2.1_bin
+          name: test_bin
           path: build/*.bin
