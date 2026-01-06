@@ -29,9 +29,11 @@ jobs:
           while read lib; do
           arduino-cli lib install "$lib"
           done < libraries.txt
-
-      - name: Compile ESP8266 firmware
-         run: |
-          arduino-cli compile \
-          --fqbn esp8266:esp8266:nodemcuv2 \
-          heater_E3.2.1
+          
+       - name: Compile ESP8266 firmware
+          run: |
+            arduino-cli compile \
+            --fqbn esp8266:esp8266:nodemcuv2 \
+            --output-dir build \
+            heater_E3.2.1
+      
