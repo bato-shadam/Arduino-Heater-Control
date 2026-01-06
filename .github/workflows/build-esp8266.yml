@@ -10,36 +10,34 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-    - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    - name: Install Arduino CLI
-    uses: arduino/setup-arduino-cli@v1
+      - name: Install Arduino CLI
+        uses: arduino/setup-arduino-cli@v1
 
-     - name: Setup ESP8266 core
-       run: |
-           arduino-cli config init
-           arduino-cli config set board_manager.additional_urls \
-             http://arduino.esp8266.com/stable/package_esp8266com_index.json
-           arduino-cli core update-index
-           arduino-cli core install esp8266:esp8266
+      - name: Setup ESP8266 core
+        run: |
+          arduino-cli config init
+          arduino-cli config set board_manager.additional_urls http://arduino.esp8266.com/stable/package_esp8266com_index.json
+          arduino-cli core update-index
+          arduino-cli core install esp8266:esp8266
 
-     - name: Install libraries from libraries.txt
+      - name: Install libraries from libraries.txt
         run: |
           while read lib; do
-          arduino-cli lib install "$lib"
+            arduino-cli lib install "$lib"
           done < libraries.txt
-          
-       - name: Compile ESP8266 firmware
-          run: |
-            arduino-cli compile \
+
+      - name: Compile ESP8266 firmware
+        run: |
+          arduino-cli compile \
             --fqbn esp8266:esp8266:nodemcuv2 \
             --output-dir build \
             heater_E3.2.1
-      
-        - name: Upload firmware BIN
-           uses: actions/upload-artifact@v4
-            with:
-             name: heater_E3.2.1_bin
-             path: build/*.bin
-    
+
+      - name: Upload firmware BIN
+        uses: actions/upload-artifact@v4
+        with:
+          name: heater_E3.2.1_bin
+          path: build/*.bin
