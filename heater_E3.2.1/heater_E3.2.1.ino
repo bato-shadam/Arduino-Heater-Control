@@ -6,7 +6,7 @@
 #include <Ticker.h>
 #include <DHT.h>
 #include <ArduinoJson.h>
-#include <ESP8266mDNS.h>
+//#include <ESP8266mDNS.h>
 
 /* ================= CONFIG ================= */
 #define LED_PIN D5
@@ -273,7 +273,7 @@ void loadConfig() {
     gpioConfigs[gpioCount].mode = kv.value()["mode"].as<String>();
     gpioConfigs[gpioCount].function = kv.value()["function"].as<String>();
     pinMode(gpioConfigs[gpioCount].pin,
-      gpioConfigs[gpioCount].mode=="OUTPUT"?OUTPUT:INPUT);
+    gpioConfigs[gpioCount].mode=="OUTPUT"?OUTPUT:INPUT);
     gpioCount++;
   }
 
@@ -323,8 +323,8 @@ void setup() {
   httpUpdater.setup(&server,"/fw");
   server.begin();
 
-  WiFi.softAP("Heater-Recovery");
-  logPrint("SoftAP فعال شد: Heater-Recovery");
+  WiFi.softAP("Heater-Setting");
+  logPrint("SoftAP فعال شد: Heater-Setting");
 }
 
 /* ================= LOOP ================= */
@@ -363,14 +363,14 @@ void loop() {
       }
       break;
 
-    case MY_WIFI_STA_CONNECTED:
-      if (!MDNS.begin("heater")) logPrint("❌ mDNS responder failed");
-      else logPrint("✅ mDNS responder started: heater.local");
-      break;
+    //case MY_WIFI_STA_CONNECTED:
+    //  if (!MDNS.begin("heater")) logPrint("❌ mDNS responder failed");
+    //  else logPrint("✅ mDNS responder started: heater.local");
+   //   break;
 
     case MY_WIFI_AP_MODE:
       WiFi.mode(WIFI_AP);
-      WiFi.softAP("Heater-Recovery");
+      WiFi.softAP("Heater-Setting");
       break;
 
     case MY_WIFI_SAFE_MODE:
