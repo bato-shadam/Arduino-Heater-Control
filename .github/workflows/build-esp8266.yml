@@ -34,10 +34,10 @@ jobs:
           arduino-cli compile \
             --fqbn esp8266:esp8266:nodemcuv2 \
             --output-dir build \
-            test
+            Test
 
       - name: Upload firmware BIN
         uses: actions/upload-artifact@v4
         with:
-          name: test_bin
+          name: Test_bin
           path: build/*.bin
