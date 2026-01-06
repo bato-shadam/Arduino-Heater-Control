@@ -295,20 +295,7 @@ void loadConfig() {
 
 /* ================= SETUP ================= */
 void setup() {
-  Serial.begin(115200);
-  // مقدار MAC جدید موردنظرت
-  uint8_t customMAC[6] = {0xE3, 0x21, 0x0E, 0x26, 0x01, 0x06};
-
-  // تنظیم بُرد به حالت Station
-  WiFi.mode(WIFI_STA);
-
-  // اعمال MAC Address دلخواه
-  wifi_set_macaddr(STATION_IF, &customMAC[0]);
-
-  // چاپ MAC جدید برای بررسی
-  Serial.print("MAC جدید: ");
-  Serial.println(WiFi.macAddress());
-  
+  Serial.begin(115200);  
   pinMode(LED_PIN,OUTPUT);
   EEPROM.begin(EEPROM_SIZE);
   LittleFS.begin();
