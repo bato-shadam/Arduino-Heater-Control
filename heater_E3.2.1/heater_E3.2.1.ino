@@ -41,6 +41,7 @@ unsigned long fwBootTimer = 0;
 
 bool fwConfirmed = false;
 bool fwPending = false;
+bool mdnsStarted = false;
 
 enum LedMode { LED_AP, LED_CONNECTING, LED_CONNECTED };
 LedMode ledMode = LED_AP;
