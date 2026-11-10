@@ -332,6 +332,10 @@ void setup() {
 void loop() {
   server.handleClient();
 
+  if (mdnsStarted) {
+    MDNS.update();
+  }
+  
   if(millis()-dhtTimer>3000){
     dhtTimer=millis();
     float nt=dht.readTemperature();
@@ -363,20 +367,22 @@ void loop() {
         wifiState = MY_WIFI_AP_MODE;
       }
       break;
+    
+case MY_WIFI_STA_CONNECTED:
 
-    case MY_WIFI_STA_CONNECTED:
-     if (!MDNS.begin("heater")) logPrint("❌ mDNS responder failed");
-      else logPrint("✅ mDNS responder started: heater.local");
+    if (!mdnsStarted) {
+        if (MDNS.begin("heater")) {
+            mdnsStarted = true;
+            MDNS.addService("http", "tcp", 80);
+            logPrint("✅ mDNS started: heater.local");
+        }
+        else {
+            logPrint("❌ mDNS responder failed");
+        }
+    }
+
     break;
-
-    case MY_WIFI_AP_MODE:
-      WiFi.mode(WIFI_AP);
-      WiFi.softAP("Heater-Setting");
-      break;
-
-    case MY_WIFI_SAFE_MODE:
-      enterSafeMode();
-      break;
+    
   }
 }
 
