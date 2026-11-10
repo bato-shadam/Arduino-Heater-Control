@@ -6,7 +6,7 @@
 #include <Ticker.h>
 #include <DHT.h>
 #include <ArduinoJson.h>
-//#include <ESP8266mDNS.h>
+#include <ESP8266mDNS.h>
 
 /* ================= CONFIG ================= */
 #define LED_PIN D5
@@ -363,10 +363,10 @@ void loop() {
       }
       break;
 
-    //case MY_WIFI_STA_CONNECTED:
-    //  if (!MDNS.begin("heater")) logPrint("❌ mDNS responder failed");
-    //  else logPrint("✅ mDNS responder started: heater.local");
-   //   break;
+    case MY_WIFI_STA_CONNECTED:
+     if (!MDNS.begin("heater")) logPrint("❌ mDNS responder failed");
+      else logPrint("✅ mDNS responder started: heater.local");
+    break;
 
     case MY_WIFI_AP_MODE:
       WiFi.mode(WIFI_AP);
