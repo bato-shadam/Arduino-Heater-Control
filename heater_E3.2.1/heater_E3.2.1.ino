@@ -42,6 +42,7 @@ unsigned long fwBootTimer = 0;
 bool fwConfirmed = false;
 bool fwPending = false;
 bool mdnsStarted = false;
+unsigned long mdnsRetryTimer = 0;
 
 enum LedMode { LED_AP, LED_CONNECTING, LED_CONNECTED };
 LedMode ledMode = LED_AP;
@@ -238,7 +239,13 @@ void handleSave() {
   saveString(ADDR_PASS, pass);
   EEPROM.commit();
 
-  wifiState = MY_WIFI_INIT;
+  if (mdnsStarted) {
+    MDNS.end();
+    mdnsStarted = false;
+}
+
+mdnsRetryTimer = 0;
+wifiState = MY_WIFI_INIT;
   server.send(200,"text/plain","تنظیمات ذخیره شد، وضعیت سریال را بررسی کنید");
 }
 
@@ -370,14 +377,23 @@ void loop() {
     
 case MY_WIFI_STA_CONNECTED:
 
-    if (!mdnsStarted) {
-        if (MDNS.begin("heater")) {
-            mdnsStarted = true;
-            MDNS.addService("http", "tcp", 80);
-            logPrint("✅ mDNS started: heater.local");
+    if (WiFi.status() != WL_CONNECTED) {
+        if (mdnsStarted) {
+            MDNS.end();
+            mdnsStarted = false;
         }
-        else {
-            logPrint("❌ mDNS responder failed");
+        logPrint("WiFi disconnected");
+        wifiState = MY_WIFI_INIT;
+        break;
+    }
+    if (!mdnsStarted && millis() - mdnsRetryTimer >= 5000) {
+        mdnsRetryTimer = millis();
+        if (MDNS.begin("heater")) {
+            MDNS.addService("http", "tcp", 80);
+            mdnsStarted = true;
+            logPrint("mDNS started: heater.local");
+        } else {
+            logPrint("mDNS start failed - retrying");
         }
     }
 
