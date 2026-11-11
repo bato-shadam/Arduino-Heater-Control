@@ -1,3 +1,4 @@
+
 name: Build ESP8266 Firmware
 
 on:
@@ -29,15 +30,32 @@ jobs:
             arduino-cli lib install "$lib"
           done < libraries.txt
 
+      - name: Detect Arduino sketch
+        id: sketch
+        run: |
+          INO=$(find . -maxdepth 2 -name "*.ino" | head -n 1)
+          if [ -z "$INO" ]; then
+            echo "ERROR: No INO file found!"
+            exit 1
+          fi
+          SKETCH_DIR=$(dirname "$INO")
+          SKETCH_NAME=$(basename "$INO" .ino)
+          echo "dir=$SKETCH_DIR" >> "$GITHUB_OUTPUT"
+          echo "name=$SKETCH_NAME" >> "$GITHUB_OUTPUT"
+
       - name: Compile ESP8266 firmware
         run: |
           arduino-cli compile \
             --fqbn esp8266:esp8266:nodemcuv2 \
             --output-dir build \
-            Test
+            "${{ steps.sketch.outputs.dir }}"
+
+      - name: Rename firmware BIN
+        run: |
+          mv build/*.bin "build/${{ steps.sketch.outputs.name }}.bin"
 
       - name: Upload firmware BIN
         uses: actions/upload-artifact@v4
         with:
-          name: Test_bin
-          path: build/*.bin
+          name: ${{ steps.sketch.outputs.name }}_bin
+          path: build/${{ steps.sketch.outputs.name }}.bin
